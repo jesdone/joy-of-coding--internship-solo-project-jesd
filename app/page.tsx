@@ -21,10 +21,10 @@ interface Event {
 export default function Home() {
   const [events, setEvents] = useState([
     { title: "event 1", id: "1" },
-    { title: "event 2", id: "2" },
-    { title: "event 3", id: "3" },
-    { title: "event 4", id: "4" },
-    { title: "event 5", id: "5" },
+    { title: "2", id: "2" },
+    { title: "3", id: "3" },
+    { title: "4", id: "4" },
+    { title: "5", id: "5" },
   ]);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -71,6 +71,16 @@ export default function Home() {
       id: new Date().getTime(),
     };
     setAllEvents([...allEvents, event]);
+  }
+
+  function handleEditClick() {
+    setShowModal(true);
+    setNewEvent({
+      title: "",
+      start: "",
+      allDay: false,
+      id: 0,
+    });
   }
 
   function handleDeleteModal(data: { event: { id: string } }) {
@@ -213,7 +223,7 @@ export default function Home() {
                           </Dialog.Title>
                           <div className="mt-2">
                             <p className="text-sm text-gray-500">
-                              Are you sure you want to delete this event?
+                              You can edit or delete this event?
                             </p>
                           </div>
                         </div>
@@ -227,6 +237,13 @@ export default function Home() {
                         onClick={handleDelete}
                       >
                         Delete
+                      </button>
+                      <button
+                        type="submit"
+                        className="inline-flex w-full justify-center rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-violet-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600 sm:col-start-2 disabled:opacity-25"
+                        onClick={handleEditClick}
+                      >
+                        Edit
                       </button>
                       <button
                         type="button"
