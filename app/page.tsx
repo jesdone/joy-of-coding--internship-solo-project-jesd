@@ -13,6 +13,8 @@ import { EventSourceInput } from "@fullcalendar/core/index.js";
 
 interface Event {
   title: string;
+  description: string;
+  due: Date | string;
   start: Date | string;
   allDay: boolean;
   id: number;
@@ -28,10 +30,21 @@ export default function Home() {
   ]);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
   const [newEvent, setNewEvent] = useState<Event>({
     title: "",
+    description: "",
+    due: "",
+    start: "",
+    allDay: false,
+    id: 0,
+  });
+  const [editEvent, setEditEvent] = useState<Event>({
+    title: "",
+    description: "",
+    due: "",
     start: "",
     allDay: false,
     id: 0,
@@ -44,9 +57,11 @@ export default function Home() {
         itemSelector: ".fc-event",
         eventData: function (eventEl) {
           let title = eventEl.getAttribute("title");
+          let description = eventEl.getAttribute("description");
+          let due = eventEl.getAttribute("due");
           let id = eventEl.getAttribute("data");
           let start = eventEl.getAttribute("start");
-          return { title, id, start };
+          return { title, id, description, due, start };
         },
       });
     }
@@ -69,15 +84,32 @@ export default function Home() {
       title: data.draggedEl.innerText,
       allDay: data.allDay,
       id: new Date().getTime(),
+      description: data.draggedEl.innerText,
+      due: data.draggedEl.innerText,
     };
     setAllEvents([...allEvents, event]);
   }
 
-  function handleEditClick() {
-    setShowModal(true);
-    setNewEvent({
+  function onEventEdit(data: DropArg) {
+    const event = {
+      ...onEventEdit,
+      start: data.date.toISOString(),
+      title: data.draggedEl.innerText,
+      allDay: data.allDay,
+      id: new Date().getTime(),
+      description: data.draggedEl.innerText,
+      due: data.draggedEl.innerText,
+    };
+    setAllEvents([...allEvents, event]);
+  }
+
+  function handleEditModal() {
+    setShowEditModal(true);
+    setEditEvent({
       title: "",
       start: "",
+      description: "",
+      due: "",
       allDay: false,
       id: 0,
     });
@@ -101,6 +133,8 @@ export default function Home() {
     setNewEvent({
       title: "",
       start: "",
+      description: "",
+      due: "",
       allDay: false,
       id: 0,
     });
@@ -122,6 +156,8 @@ export default function Home() {
     setNewEvent({
       title: "",
       start: "",
+      description: "",
+      due: "",
       allDay: false,
       id: 0,
     });
@@ -140,7 +176,7 @@ export default function Home() {
               headerToolbar={{
                 left: "prev,next today",
                 center: "title",
-                right: "resourceTimelineWeek, dayGridMonth, timeGridWeek",
+                right: "dayGridMonth, timeGridWeek",
               }}
               events={allEvents as EventSourceInput}
               nowIndicator={true}
@@ -189,7 +225,7 @@ export default function Home() {
             </Transition.Child>
 
             <div className="fixed inset-0 z-10 overflow-y-auto">
-              <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm: p-0">
+              <div className="flex min-h-full items-end justify-center text-center sm:items-center sm: p-0">
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -238,13 +274,13 @@ export default function Home() {
                       >
                         Delete
                       </button>
-                      <button
+                      {/* <button
                         type="submit"
                         className="inline-flex w-full justify-center rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-violet-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600 sm:col-start-2 disabled:opacity-25"
-                        onClick={handleEditClick}
+                        onClick={handleEditModal}
                       >
                         Edit
-                      </button>
+                      </button> */}
                       <button
                         type="button"
                         className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 
